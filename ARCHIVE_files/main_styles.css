@@ -1,0 +1,572 @@
+/* YoutubeRepeater styles start */
+
+/* make sure there's always a scrollbar */
+html { overflow-y: scroll; }
+
+html, body
+{
+  margin: 0;
+  padding: 0;
+  width: 100%; height: 100%;
+  font-size: 14px; line-height: 18px;
+  font-family: Arial, Helvetica; 
+  background-color: #eee;  
+}
+
+img { border-width: 0px; }
+
+h1  
+{ 
+  margin: 0px; padding: 0px;
+  font-size: 15px; line-height: 22px; font-family: Arial, Helvetica; font-weight: bold;
+}
+
+div#container
+{
+  position: relative; /* needed for footer positioning*/
+  margin: 0 auto;
+  padding: 0px; 
+  width: 982px; 
+  height: auto !important;
+  height: 100%; 
+  min-height: 100%;
+  background-color: white;  
+  border-width: 0px 1px 0px 1px;
+  border-color: #cccccc; border-style: solid;
+}
+
+div#header_row
+{
+  height: 90px;
+}
+div#logo
+{
+  position: absolute;
+  top: 0px; left: 0px;
+  width: 270px; height: 90px;
+}
+div#banner
+{
+  position: absolute;
+  top: 0px; right: 170px;
+  width: 808px; height: 90px;
+  overflow: hidden;
+}
+
+
+.banner_text
+{
+  position: absolute;
+  top: 6px; right: 14px;
+  width: 400px; height: 16px;
+  font-size: 12px; line-height: 15px;
+  font-family: Arial, Helvetica; 
+  text-align: right;
+  overflow: hidden;
+}
+.banner_text a       { color: #0033cc; text-decoration: none; }
+.banner_text a:hover { color: red; text-decoration: underline; }
+div#banner_550x80x1
+{
+  position: absolute;
+  top: 4px; right: 7px;
+  width: 550px; height: 80px;
+  text-align: right; 
+  border-width: 0px; border-color: red; border-style: solid;
+}
+
+div#banner_550x80x2
+{
+  position: relative;
+  display: table-cell; 
+  width: 550px; height: 80px;
+  text-align: right; 
+  vertical-align: middle;  
+  border-width: 0px; border-color: blue; border-style: solid;
+}
+
+
+div.menu_row
+{
+  height: 33px;
+  border-width: 0px 0px 1px 0px; 
+  border-color: #eaeaea; border-style: solid;
+  font-size: 16px; line-height: 30px;
+  font-family: Arial, Helvetica; 
+  background-color: #fafafa;
+}
+.menu_item, .menu_item_sel
+{
+  padding-top: 0px;
+  height: 33px;
+  border-width: 0px 0px 0px 0px; 
+  border-color: #eaeaea; border-style: solid;
+  font-size: 16px; line-height: 30px;
+  font-family: Arial, Helvetica; 
+  font-weight: bold;
+  text-align: center;
+  white-space: nowrap;  
+}
+.menu_item_sel     { background-color: #eaeaea; } 
+.menu_item a       { color: #6699C1; text-decoration: none; }
+.menu_item a:hover { color: red; text-decoration: underline; }
+.menu_item_sel a       { color: #6699C1; text-decoration: none; }
+.menu_item_sel a:hover { color: red; text-decoration: underline; }
+div.menu_search
+{
+  position: relative;
+  padding: 0px;
+  width: 301px;
+  height: 29px;
+  border-width: 0px; border-color: red; border-style: solid;
+  background-color: #eaeaea;
+  padding-top: 0px;
+  font-size: 15px; line-height: 25px;
+  color: red;
+}
+.menu_search_txt
+{
+  position: absolute;
+  left: 6px; top: 5px; width: 180px; height: 21px;
+  border-width: 1px; border-color: #bbdafd; border-style: solid;
+  font-size: 15px; line-height: 22px;
+  font-family: Arial, Helvetica; 
+}
+.menu_search_btn
+{
+  position: absolute;
+  left: 190px; top: 3px; width: 113px; height: 28px;
+  border-width: 0px; border-color: red; border-style: solid;
+  font-size: 12px; line-height: 22px;
+  font-family: Arial, Helvetica; 
+  cursor: pointer;
+}
+  
+div#content_row
+{
+  position: relative;
+  padding: 0px 0px 20px 0px; /* bottom padding for footer */
+  border-width: 0px; border-color: blue; border-style: solid;
+}
+div#content_row a       { color: #0033cc; text-decoration: none; }
+div#content_row a:hover { color: red; text-decoration: underline; }
+
+
+div#ContentLarge
+{
+  position: relative;
+  padding: 0px 14px 0px 14px;
+  border-width: 0px; border-color: green; border-style: solid;
+  font-size: 15px; line-height: 22px;
+  font-family: Arial, Helvetica; 
+  font-weight: normal;
+  text-align: left;
+}
+
+div.WelcomeLeft
+{
+  position: relative;
+  width: 470px; height: auto;
+  border-width: 0px; border-color: red; border-style: solid;
+}
+
+div.WelcomeRight
+{
+  position: absolute;
+  left: 490px; top: 53px; width: 485px; height: 490px;
+  border-width: 0px; border-color: red; border-style: solid;
+}
+
+.LargeBold
+{
+  vertical-align: top;
+  font-size: 15px; line-height: 20px; font-weight: bold;
+  font-family: Arial, Helvetica; 
+}
+.LargeText
+{
+  vertical-align: top;
+  font-size: 15px; line-height: 20px; font-weight: normal;
+  font-family: Arial, Helvetica; 
+  letter-spacing: 0.2px;
+}
+    
+
+div#footer_row
+{
+  position: fixed;
+  bottom: 0px; /* stick to bottom */
+  height: 18px;
+  width: 982px;
+  background: #333333;
+  border-width: 1px 0px 0px 0px; border-color: #cccccc; border-style: solid;
+  background-color: #efefef;  
+  font-size: 12px; line-height: 18px;
+  font-family: Arial, Helvetica; 
+  color: #555555;
+  overflow: hidden;
+}
+div#footer_row a       { color: #0033cc; text-decoration: none; } 
+div#footer_row a:hover { color: red;     text-decoration: none; } 
+
+
+div#footer_left_Bicon
+{
+  position: absolute;
+  left: 3px; top: 2px; width: 16px; height: 16px;
+  text-align: left;
+}
+div#footer_left_Btext
+{
+  position: absolute;
+  left: 20px; top: 0px; width: 120px; height: 18px;
+  border-width: 0px; border-color: red; border-style: solid;
+  text-align: left;
+}
+
+div#footer_left_Ticon
+{
+  position: absolute;
+  left: 141px; top: 0px; width: 16px; height: 16px;
+  text-align: left;
+}
+div#footer_left_Ttext
+{
+  position: absolute;
+  left: 160px; top: 0px; width: 130px; height: 18px;
+  border-width: 0px; border-color: blue; border-style: solid;
+  text-align: left;
+}
+
+
+div#footer_right
+{
+  position: absolute;
+  right: 4px; top: 0px; width: 320px; height: 18px;
+  border-width: 0px; border-color: red; border-style: solid;
+  text-align: right;
+}
+
+.red_error { color: red; }
+
+/* icon link (Nikhil's photo blog) */
+a.icon 
+{
+  padding: 1px 0px 2px 20px;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+}
+a.digg      { background-image: url(//www.youtuberepeater.com/images/icon_digg.gif); }
+a.favorite  { background-image: url(//www.youtuberepeater.com/images/icon_favs.gif); }
+a.facebook  { background-image: url(//www.youtuberepeater.com/images/icon_facebook.gif); }
+a.youtube   { background-image: url(//www.youtuberepeater.com/images/icon_youtube.gif); }
+a.twitter   { background-image: url(//www.youtuberepeater.com/images/icon_twitter.gif); }
+ul.linkBar 
+{
+  padding: 2px 0px 2px 0px;
+  margin: 0px;
+  list-style: none none outside;
+  font-size: 12px;
+  border-width: 0px; border-color: red; border-style: solid;
+}
+ul.linkBar li 
+{
+  padding-left: 5px;
+  display: inline; /* list-item; */
+  height: 20px;
+}
+
+/* Video Handler classes */
+div.videoError
+{
+  position: relative;
+  left: 8px; top: 8px; width: 880px; height: auto;
+  border-width: 0px; border-color: red; border-style: solid;
+}
+div.videoTop
+{
+  position: relative;
+  left: 8px; top: 8px; width: 635px; height: 20px;
+  padding: 1px;
+  border-width: 0px; border-color: red; border-style: solid;
+  overflow: hidden;  
+}
+div.videoTitle
+{
+  position: absolute;
+  left: 0px; top: -1px; width: 550px; height: 20px;
+  padding: 0px;
+  border-width: 0px; border-color: blue; border-style: solid;
+  overflow: hidden;  
+}
+div.videoYTLink
+{
+  position: absolute;
+  right: 2px; top: -1px; width: 76px; height: 20px;
+  padding: 0px;
+  font-size: 12px; line-height: 20px; font-family: Arial, Helvetica; font-weight: normal;
+  border-width: 0px; border-color: blue; border-style: solid;
+  text-align: right;
+}
+div.videoPlayer
+{
+  position: relative;
+  left: 8px; top: 8px; width: 640px; height: 360px;
+  border-width: 0px; border-color: red; border-style: solid;
+}
+div.videoInfo
+{
+  position: relative;
+  left: 8px; top: 12px; width: 640px; height: 20px;
+  border-width: 0px; border-color: red; border-style: solid;
+}
+div.videoStars
+{
+  position: absolute;
+  left: 0px; top: 0px; width: 76px; height: 16px;
+}
+div.videoRatings
+{
+  position: absolute;
+  left: 80px; top: 0px; width: 100px; height: 16px;
+  color: #666666;
+  border-width: 0px; border-color: blue; border-style: solid;
+}
+div.videoViews
+{
+  position: absolute;
+  right: 3px; top: 0px; width: 120px; height: 16px;
+  color: #111111;
+  text-align: right;
+  border-width: 0px; border-color: blue; border-style: solid;
+}
+div.videoStartEnd
+{
+  position: absolute;
+  left: 180px; top: 0px; width: 320px; height: 16px;
+  color: #666666;
+  border-width: 0px; border-color: blue; border-style: solid;
+  text-align: center;
+}
+div.videoTimeBox
+{
+  position: relative;
+  left: 8px; top: 14px; width: 638px; height: 30px; /* dynamic */
+  border-width: 1px; border-color: #ff8888; border-style: solid;
+  background-color: #fff2f2; 
+  overflow: hidden; 
+}
+div.videoTimeStart
+{
+  position: absolute;
+  left: 12px; top: 5px; width: 260px; height: 20px;
+}
+div.videoTimeEnd
+{
+  position: absolute;
+  left: 250px; top: 5px; width: 240px; height: 20px;
+}
+div.videoTimeClose
+{
+  position: absolute;
+  right: 6px; top: 5px; width: 100px; height: 20px;
+  text-align: right;
+}
+.videoTimeTxt
+{
+  border-width: 1px; border-color: #ff8888; border-style: solid;
+  width: 40px; height: 16px;
+  text-align: right;
+  padding-right: 4px;
+  margin-left: 4px;
+  margin-right: 4px;
+}
+.videoTimeBtn
+{
+  font-size: 12px; line-height: 20px;
+  font-family: Arial, Helvetica; 
+  cursor: pointer;
+  margin-left: 4px;
+}
+
+div.videoBottom
+{
+  position: relative;
+  left: 4px; top: 20px; width: 644px; height: 150px;
+  border-width: 0px; border-color: red; border-style: solid;
+}
+div.videoMiniImage 
+{  
+  position: relative;
+  float: right;
+  width: 190px; height: 133px;
+  border-width: 0px; border-color: red; border-style: solid;
+  text-align: right;
+}
+div.videoMiniFill1
+{  
+  position: absolute;
+  left: 13px; top: 22px; width: 171px; height: 87px;
+  border-width: 0px; border-color: red; border-style: solid;    
+  overflow: hidden;  
+}    
+div.videoMiniFill2
+{  
+  position: absolute;
+  left: 0px; top: -23px; width: 171px; height: 128px;
+  border-width: 0px; border-color: blue; border-style: solid;    
+}
+div.videoSocial /* this is where Digg & Facebook buttons are */
+{  
+  position: relative;
+  float: left;
+  width: 130px; height: 132px;
+  border-width: 0px; border-color: red; border-style: solid;
+  text-align: left;
+}
+div.diggImage 
+{  
+  position: relative;
+  width: 54px; height: 86px;
+  border-width: 0px; border-color: red; border-style: solid;
+  text-align: left;
+  overflow: hidden; 
+}
+div.diggText
+{  
+  position: absolute;
+  left: 56px; top: 0px; 
+  width: 66px; height: 82px;
+  border-width: 0px; border-color: red; border-style: solid;
+  font-size: 12px;
+  color: #888888;
+  text-align: left;
+}
+
+
+
+div.videoBottomLink
+{  
+  position: relative;
+  left: 8px; top: 16px; width: 880px; height: 34px;
+  border-width: 0px; border-color: red; border-style: solid;
+}    
+
+div.videoBold { font-weight: bold; }
+div.videoBold a { color: #0033cc; text-decoration: none; }
+div.videoBold a:hover { color: red; text-decoration: underline; }
+
+div.videoRelatedHead
+{
+  position: absolute;
+  right: 10px; width: 312px; top: 6px; height: 20px;
+  padding: 1px;
+}
+
+div.videoRelated
+{
+  position: absolute;
+  right: 10px; width: 312px; top: 30px; height: 553px;
+  border-width: 1px; border-color: #cccccc; border-style: solid;
+  padding: 1px;
+  overflow-y: scroll;
+}
+
+/* Top Repeater classes */
+div.topRepRow
+{
+  position: relative;
+  left: 0px; top: 0px; width: 952px; height: 484px;
+  border-width: 0px; border-color: blue; border-style: solid;
+  padding: 0px; margin: 0px;
+}    
+div.topRepH1, div.topRepH2
+{
+  position: relative;
+  left: 0px; top: 0px; width: 460px; height: 20px;
+  border-width: 0px; border-color: red; border-style: solid;
+  padding: 3px;
+}    
+div.topRepH2 { position: absolute; left: 482px; top: 0px; }
+div.topRepV1, div.topRepV2
+{
+  position: relative;
+  left: 0px; top: 0px; width: 468px; height: 449px;
+  border-width: 1px; border-color: #cccccc; border-style: solid;
+  padding: 1px;
+  overflow-y: scroll;
+}
+div.topRepV2 { position: absolute; left: 482px; top: 26px; }
+div.topRepBottom
+{
+  position: relative;
+  left: 0px; top: 0px; width: 865px; height: auto;
+  border-width: 1px; border-color: red; border-style: solid;
+  font-size: 14px; line-height: 16px;
+  font-family: Arial, Helvetica; 
+  color: #333333;
+  padding: 1px;
+}
+
+/* video item display classes */
+div.ItemRow1,div.ItemRow2
+{
+  position: relative;
+  margin: 2px; height: 52px; width: 446px;
+  border-width: 1px; border-color: #EEEEEE; border-style: solid;
+  background-color: #F4F4F4;
+  color: #333333;
+  text-decoration: none;
+  /* cursor: pointer; - before 2011-07-27.  then removed double-linking */
+  overflow: hidden; 
+}
+div.ItemRow2        { background-color: white; }
+div.ItemRow1:hover  { background-color: #fff7f3; }
+div.ItemRow2:hover  { background-color: #fff7f3; }
+div.ItemImage
+{
+  position: absolute;
+  width: 100px; height: 50px;
+  border-width: 1px; border-color: white; border-style: solid;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+}
+div.ItemTitle
+{
+  position: absolute;
+  left: 106px; top: 1px; right: 2px; height: 32px;
+  font-size: 14px; line-height: 16px; font-family: Arial, Helvetica; font-weight: normal;
+  border-width: 0px; border-color: blue; border-style: solid;
+  overflow: hidden;
+  color: #0033cc; text-decoration: none;
+}
+div.ItemStars
+{
+  position: absolute;
+  left: 106px; top: 35px; width: 60px; height: 12px;
+  border-width: 0px; border-color: blue; border-style: solid;
+  overflow: hidden;
+}
+div.ItemViews
+{
+  position: absolute;
+  left: 172px; top: 35px; width: 160px; height: 14px;
+  font-size: 12px; line-height: 14px; font-family: Arial, Helvetica; font-weight: normal;
+  color: black;
+  border-width: 0px; border-color: blue; border-style: solid;
+  overflow: hidden;
+  white-space: nowrap;
+}
+div.ItemRepeats
+{
+  position: absolute;
+  top: 35px; right: 2px; width: 80px; height: 14px;
+  font-size: 12px; line-height: 14px; font-family: Arial, Helvetica; font-weight: normal;
+  color: black;
+  border-width: 0px; border-color: blue; border-style: solid;
+  overflow: hidden;
+  white-space: nowrap;
+  text-align: right; 
+}
+
+/* YoutubeRepeater styles end */

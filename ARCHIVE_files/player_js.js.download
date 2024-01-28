@@ -1,0 +1,490 @@
+
+var videoID = '';   // video we are playing
+var startSec = 0;   // starting from this second
+var endSec = 0;     // ending at this second
+var currSec = 0;
+var repeat_url = '';
+
+var player = null;  // player object
+
+
+// YOUTUBE PLAYER EVENTS START
+// YOUTUBE PLAYER EVENTS START
+
+function onPlayerReady(event)
+{
+    player = event.target;
+    seekTo(startSec);
+    play();
+    setInterval(updateYTInfo, 250);
+}
+
+function onPlayerStateChange(event)
+{
+    var newState = event.data;
+    if (newState == 0) {
+        // finished playing one song - go to the next one (if possible)
+        rePlay();
+    }
+    else if (newState == 1) {
+        // started playing
+        if (inside_play_button == true)
+            updateImage('btnPlay', 'btn_pause_red.gif');
+        else
+            updateImage('btnPlay', 'btn_pause_grey.gif');
+        gaEvent('Play');
+    }
+    else if (newState == 2 || newState == 5) {
+        // paused or stopped
+        if (inside_play_button == true)
+            updateImage('btnPlay', 'btn_play_red.gif');
+        else
+            updateImage('btnPlay', 'btn_play_grey.gif');
+        gaEvent('Pause');
+    }
+}
+
+function onPlayerError(event)
+{
+    errorCode = event.data;
+    gaEvent('Error' + errorCode);
+    if (errorCode == 100) {
+        alert("The video cannot play.  Please try again or go directly to YouTube.com");
+    }
+    else if (errorCode == 101 || errorCode == 150) {
+        // alert("The author of this video did not allow it to be embedded outside of YouTube.com");
+    }
+    else {
+        alert("Unknown Youtube error: " + errorCode);
+    }
+}
+
+// YOUTUBE PLAYER EVENTS END
+// YOUTUBE PLAYER EVENTS END
+
+// YOUTUBE PLAYER FUNCTIONS START
+// YOUTUBE PLAYER FUNCTIONS START
+
+function play ()    { if (player) player.playVideo(); }
+function pause()    { if (player) player.pauseVideo(); }
+function stop()     { if (player) player.stopVideo(); }
+
+function mute()     { if (player) player.mute(); }
+function unMute()   { if (player) player.unMute(); }
+function isMuted()  { if (player) return player.isMuted(); else return true; }
+function getVolume()    { if (player) return player.getVolume(); else return 0; }
+function setVolume(v)   { if (player) player.setVolume(v); }
+
+function setPlayerSize(w, h)    { if (player) player.setSize(w, h); }
+
+// -1 – unstarted, 0 – ended, 1 – playing, 2 – paused, 3 – buffering, 5 – video cued
+function getPlayerState()       { if (player) try { return player.getPlayerState(); } catch (err) { }; return -1; }
+function getDuration()          { if (getPlayerState() != -1) return player.getDuration(); else return -1; }
+function getCurrentTime()       { if (getPlayerState() != -1) return player.getCurrentTime(); else return 0; }
+function getCurrentTimeStr()    { return formatTimeStr(getCurrentTime()); }
+
+// small: (320x240),  medium: (640x360, 480x360)  large: (853x480, 640x480),  hd720:  (1280x720, 960x720),  hd1080: (1920x1080, 1440x1080),  highres: (> 1920x1080)
+function getPlaybackQuality()  { if (player) return player.getPlaybackQuality(); else return '';  }
+function setPlaybackQuality(q) { if (player) player.setPlaybackQuality(q); } // string param
+function getAvailQualities()   { if (player) return player.getAvailableQualityLevels(); else return ''; } // returns Array of strings
+
+function seekTo(seconds)    { if (player) player.seekTo(seconds, true); }
+
+// YOUTUBE PLAYER FUNCTIONS END
+// YOUTUBE PLAYER FUNCTIONS END
+
+// UPDATE / REPLAY START
+// UPDATE / REPLAY START
+
+function updateYTInfo () 
+{
+    getWidthAndHeight(); // WW & HH
+  
+    // time
+    var c = getCurrentTime();
+    var t = getDuration();
+    if (c <= 0 || t <= 0)
+    {
+        if (WW < 160) updateHTML('time', '...');
+        else updateHTML('time', 'loading');
+    }
+    else
+    {
+        if (WW < 160) updateHTML('time', formatTimeStr(c));
+        else 
+        {
+            if (startSec <= 0 && (endSec <= 0 || endSec >= t)) updateHTML('time', formatTimeStr(c) + ' / ' + formatTimeStr(t));
+            else updateHTML('time', formatTimeStr(c) + ' / ' + formatTimeStr(startSec) + '-' + formatTimeStr(endSec));
+        }
+    }
+  
+    // hq
+    if (inside_hq_button == false)
+    {
+        if (isHQAvail())
+        {
+            if (isHQPlaying()) updateImage('btnHQ', 'btn_hq_red.gif');
+            else updateImage('btnHQ', 'btn_hq_grey.gif');
+        }
+        else updateImage('btnHQ', 'btn_hq_dis.gif');
+    }
+  
+    // volume
+    var vn = getVolume0to4();
+    if (inside_volume) updateVolumeImage(vn, 'red');
+    else updateVolumeImage(vn, 'grey');
+  
+    // rewind if playing outside of our range?
+    if (endSec > 4 && endSec < t && c >= endSec && getPlayerState() == 1)
+    {
+        rePlay();
+    }
+}
+
+function formatTimeStr (total_secs)
+{ 
+    var m = parseInt (total_secs / 60);
+    var s = parseInt (total_secs - m * 60);
+    if (s < 10) return m + ':0' + s;
+    else return m + ':' + s;
+}
+
+var replayStartedTime = 0;
+function rePlay()
+{
+    if (player)
+    {
+        pause();
+        seekTo(startSec);
+        play();
+        replayStartedTime = getCurrentTime();
+        setTimeout('rePlayTimer()',2000);
+        httpPostRepeat(); // post before next play in case of a msg
+        gaEvent('Repeat');
+    }
+    else
+    {
+        alert ('player did not initialize');
+    }
+}
+
+function rePlayTimer() 
+{
+    if (replayStartedTime == getCurrentTime())
+    {
+        stop();
+        seekTo(startSec);
+        play();
+    }
+}
+
+// UPDATE / REPLAY END
+// UPDATE / REPLAY END
+
+// POSTING START
+// POSTING START
+
+var ok_to_post = true;
+function setOkToPost() { ok_to_post = true; }
+function httpPostRepeat() 
+{
+    if (!ok_to_post) return;
+    var RR1 = createHttpPostRepeat();
+    if (RR1 != null)
+    {
+        RR1.onreadystatechange = function() 
+        {
+            if (RR1.readyState == 4) 
+            {
+                HandleOurPostMsg(RR1);
+            }
+        }
+        RR1.send('m='+repeat_mini+'&v='+videoID+'&s='+startSec+'&e='+endSec+'&w='+WW+'&h='+HH);
+    }
+    // next post at least in 1 minute or half of the video duration
+    ok_to_post = false;
+    var t = Math.max(60,getDuration()/2);
+    setTimeout ('setOkToPost()', t*1000);
+}
+
+function createHttpPostRepeat()    
+{
+    var req = null;
+    try 
+    {
+        var timed_url = repeat_url + "?time=" + (new Date()).getTime();
+        if (window.XMLHttpRequest) req = new XMLHttpRequest();
+        else if (window.ActiveXObject) req = new ActiveXObject("Microsoft.XMLHTTP");
+        req.open('POST', timed_url, true);
+        req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    }
+    catch (err) { req = null; }
+    return req;
+}
+
+// handle if there's a message in response
+function HandleOurPostMsg(RR1)
+{
+    // check if there's a message for better video
+    var s = RR1.responseText;
+    var sMsg = GetMyParam(s,'msg');
+    var sURL = GetMyParam(s,'url');
+    var sID  = GetMyParam(s,'id');
+    var sNew = GetMyParam(s,'new');
+    // alert ('s=' + s + '\r\nmsg=' + sMsg + '\r\nurl=' + sURL + '\r\nid=' + sID + '\r\nnew=' + sNew);
+    if (sMsg != '')
+    {
+        // show alert or confirm, go to new url if needed
+        pause();
+        var c = 0;
+        try // if this fails, we still need to update server not to send anymore messages
+        {
+            if (sURL != '') 
+            {
+                self.focus();
+                c = confirm(sMsg);
+                if (c)
+                {
+                    if (sNew == '1') window.open(sURL, "_blank", "menubar=1,toolbar=1,location=1,scrollbars=1,status=1,directories=1,resizable=1");
+                    else window.location = sURL;
+                }
+            }
+            else alert (sMsg);
+        }
+        catch (err) { }
+        if (!c) play(); // if we did not load another video, start repeating this one again
+        // update our server with the answer
+        var RR2 = createHttpPostRepeat();
+        RR2.onreadystatechange = function() { } // nothing
+        RR2.send('id='+sID+'confirm='+Number(c));
+    }
+}
+
+function GetMyParam(s,pName) // get a param from our response
+{
+    var i1 = s.indexOf('<'  + pName + '>');
+    if (i1 >= 0)
+    {
+        i1 += pName.length+2;
+        var i2 = s.indexOf('</' + pName + '>');
+        if (i2 > i1) return s.substring (i1, i2);
+    }
+    return '';
+}
+
+// POSTING END
+// POSTING END
+
+// MINI PLAYER HELPERS START
+// MINI PLAYER HELPERS START
+
+function isHQAvail()
+{
+    try {
+        var s = getAvailQualities().toString();
+        if (s.indexOf('large') >= 0) return true;
+    } catch (err) { }
+    return false;
+}
+
+function isHQPlaying()
+{
+    try {
+        var s = getPlaybackQuality();
+        if (s.indexOf('large') >= 0 || s.indexOf('hd720') >= 0) return true;
+    } catch (err) { }
+    return false;
+}
+
+function getVolume0to4()
+{
+    if (isMuted()) return 0;
+    var v = getVolume();
+    if (v <= 0) return 0;
+    else if (v < 25) return 1;
+    else if (v < 50) return 2;
+    else if (v < 75) return 3;
+    else return 4;
+}
+
+function updateVolumeImage(vn, red_grey)
+{
+    updateImage ('btnVol', 'btn_vol_' + red_grey + vn + '.gif');
+}
+
+function isVolumeBarVisible()
+{
+    var vol = document.getElementById('popup_vol');
+    if (vol == null) return false;
+    if (vol.style.visibility == 'visible') return true;
+    return false;
+}
+
+function showVolumeBar(b)
+{
+    var vol = document.getElementById('popup_vol');
+    if (b == true) vol.style.visibility = 'visible';
+    else vol.style.visibility = 'hidden';
+}
+
+// MINI PLAYER HELPERS END
+// MINI PLAYER HELPERS END
+
+// MINI PLAYER CONTROLS START
+// MINI PLAYER CONTROLS START
+
+var inside_play_button = false;
+function onPlayHover()
+{
+    inside_play_button = true;
+    if (getPlayerState() == 1) updateImage ('btnPlay', 'btn_pause_red.gif');
+    else updateImage ('btnPlay', 'btn_play_red.gif');
+}
+
+function onPlayOut()
+{
+    inside_play_button = false;
+    if (getPlayerState() == 1) updateImage ('btnPlay', 'btn_pause_grey.gif');
+    else updateImage ('btnPlay', 'btn_play_grey.gif');
+}
+
+function onPlayClick()
+{
+    if (getPlayerState() == 1) pause ();
+    else 
+    {
+        if (opener && opener.closed == false) 
+        {
+            try { opener.pause(); } catch (err) { }
+        }
+        play ();
+    }
+    return false;
+}
+
+function onTimeHover() {  }
+function onTimeOut() {  }
+function onTimeClick() { return false; }
+
+var inside_hq_button = false;
+function onHQHover() 
+{
+    inside_hq_button = true;
+    if (isHQAvail())
+    {
+        if (isHQPlaying()) updateImage ('btnHQ', 'btn_hq_grey.gif');
+        else updateImage ('btnHQ', 'btn_hq_red.gif');
+    }
+}
+function onHQOut()
+{
+    inside_hq_button = false;
+    if (isHQAvail())
+    {
+        if (isHQPlaying()) updateImage ('btnHQ', 'btn_hq_red.gif');
+        else updateImage ('btnHQ', 'btn_hq_grey.gif');
+    }
+}
+function onHQClick() 
+{  
+    if (isHQAvail())
+    {
+        if (isHQPlaying()) 
+        {
+            setPlaybackQuality('medium');
+        }
+        else 
+        {
+            // if large is avail - use it, if not - use hd720
+            var s = getAvailQualities().toString();
+            if (s.indexOf('large') >= 0) setPlaybackQuality('large');
+            else if (s.indexOf('hd720') >= 0) setPlaybackQuality('hd720');
+        }
+    }
+    return false;
+}
+
+var inside_volume = false;
+var delay_hide = null;
+function delayHideVolume()
+{
+    inside_volume = false;
+    showVolumeBar(false);
+    updateVolumeImage (getVolume0to4(), 'grey');
+};
+function onVolHover() 
+{
+    inside_volume = true;
+    clearTimeout(delay_hide);
+    updateVolumeImage (getVolume0to4(), 'red');
+    showVolumeBar(true);
+}
+function onVolOut()   
+{
+    delay_hide = setTimeout('delayHideVolume()', 200);
+}
+function onVolClick() 
+{
+    if (isMuted()) unMute ();
+    else mute();
+    return false;
+}
+function onVolBarHover()
+{
+    inside_volume = true;
+    clearTimeout(delay_hide);
+}
+function onVolBarOut()
+{
+    delay_hide = setTimeout('delayHideVolume()', 200);
+}
+
+// MINI PLAYER CONTROLS END
+// MINI PLAYER CONTROLS END
+
+// GENERAL START
+// GENERAL START
+
+// google analytics event
+function gaEvent(s) {
+    try {
+        pageTracker._trackEvent(s, videoID);
+    }
+    catch (err) { }
+}
+
+// get window width & height
+var WW = 0;
+var HH = 0;
+function getWidthAndHeight() {
+    // diff browsers have diff ways... 
+    if (typeof (window.innerWidth) == 'number') {
+        // firefox & opera work very nice
+        WW = window.innerWidth;
+        HH = window.innerHeight;
+    }
+    else if (document.documentElement) {
+        // IE 6+
+        WW = document.documentElement.clientWidth;
+        HH = document.documentElement.clientHeight;
+    }
+    else {
+        WW = document.body.clientWidth;
+        HH = document.body.clientHeight;
+    }
+    if (typeof (WW) != 'number') WW = 0;
+    if (typeof (HH) != 'number') HH = 0;
+}
+
+function updateHTML(elmId, value) {
+    var o = document.getElementById(elmId);
+    if (o) o.innerHTML = value;
+}
+
+function updateImage(elmId, imgName) {
+    var o = document.getElementById(elmId);
+    if (o) o.src = 'images/' + imgName;
+}
+
+// GENERAL END
+// GENERAL END

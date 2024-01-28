@@ -1,0 +1,764 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!-- saved from url=(0061)https://www.youtuberepeater.com/watch?v=xmEkAIWBVvw#gsc.tab=0 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.3, maximum-scale=3.0, minimum-scale=0.85">
+
+
+<title>
+	Nightcore - La Da Dee - Repeat in a loop
+</title><meta name="description" content="Type &#39;repeater&#39; between &#39;youtube&#39; and &#39;.com&#39; and your video will automatically repeat/replay in a loop.  Use a mini player without menus or toolbars.  Check top repeated videos.">
+  <link rel="icon" href="https://www.youtuberepeater.com/favicon.gif" type="image/gif">
+  <link rel="icon" href="https://www.youtuberepeater.com/favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="https://www.youtuberepeater.com/favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" type="text/css" href="./main_styles.css">
+  <script async="" src="./async-ads.js.download"></script><script type="text/javascript" id="www-widgetapi-script" src="./www-widgetapi.js.download" async=""></script><script src="./iframe_api"></script><script type="text/javascript" async="" src="./f.txt"></script><script language="JavaScript" type="text/javascript" src="./main_js.js.download"></script>
+  <!-- script language="JavaScript" type="text/javascript" src="//go.onclasrv.com/apu.php?zoneid=8790&element=txtSearch"></script -->
+  
+
+<script language="JavaScript" type="text/javascript" src="./player_js.js.download"></script>
+
+<script language="JavaScript" type="text/javascript">
+
+// divs, txts for dynamic html
+var content1 = null; // related videos will show here
+var txtStartEnd = null; // status 'repeating from 0:00 to 2:00'
+var txtStart = null; // start time textbox
+var txtEnd = null; // end time textbox
+var timeBox = null; // purple div surrounding all time buttons & txts
+var imgUpDn = null; // up/down arrow to open/close timeBox
+var videoBottomLink = null; // div with direct link
+var facebookLink = null; // facebook link
+var twitterLink = null; // twitter link
+
+// these vars are not url-encoded
+var sShareTitle   = 'Nightcore - La Da Dee';
+var sShareBaseURL = 'http://www.YoutubeRepeater.com/watch?v=xmEkAIWBVvw&name=Nightcore+La+Da+Dee';
+
+// mini player & about open in separate windows
+//var mini_window  = null;
+var about_window = null;
+var youtube_window = null;
+var fb_window = null;
+var tw_window = null;
+var window_check = null;
+
+function openMiniPlayer()
+{
+    pause();
+
+    var currentSec = parseInt(getCurrentTime()).toString();
+    if (currentSec < 12 && startSec == 0) currentSec = 0;
+    var currVol = getVolume();
+
+    // rewind back to starting position and stop
+    seekTo(startSec);
+    stop();
+  
+    var sParams = "";
+    if (screen.width > 600 && screen.height > 400)
+    {
+        if (navigator.userAgent.indexOf('MSIE') > 0)
+        {
+            // IE
+            sParams = "left="+(screen.width-350)+",top="+(screen.height-387)+",";
+        }
+        else
+        {
+            // Firefox
+            sParams = "left="+(screen.width-330)+",top="+(screen.height-387)+",";
+        }
+    }
+          // 2018 added   ( directories=0,titlebar=0,location=0,status=0,menubar=0  are outdated )
+    mini_window = window.open("/PlayMiniVideo?t="+currentSec+"&s="+startSec+"&e="+endSec+"&vol="+currVol+"&v="+videoID, "MiniRepeater", sParams+"width=320,height=287,toolbar=0,scrollbars=0,status=0,resizable=1,directories=0,titlebar=0,location=0,status=0,menubar=0");
+    if (mini_window.opener == null) mini_window.opener = self;
+    mini_window.focus();
+    startWindowCheck();
+    return false;
+}
+
+function openAboutMini() 
+{
+    about_window = window.open("/MiniPlayer", "AboutMiniPlayer", "width=1000,height=700,toolbar=0,scrollbars=1,status=0,resizable=1");
+    about_window.focus();
+    startWindowCheck();
+    return false;
+}
+function openYoutube(url)
+{
+    pause();
+    youtube_window = window.open(url, "YoutubeWindow", "menubar=1,toolbar=1,location=1,scrollbars=1,status=1,directories=1,resizable=1");
+    youtube_window.focus();
+    startWindowCheck();
+    return false;
+}
+function openFacebook()
+{
+    fb_window = window.open(facebookLink.href, "FacebookWindow", "menubar=1,toolbar=1,location=1,scrollbars=1,status=1,directories=1,resizable=1");
+    fb_window.focus();
+    return false;
+}
+function openTwitter()
+{
+    tw_window = window.open(twitterLink.href, "TwitterWindow", "menubar=1,toolbar=1,location=1,scrollbars=1,status=1,directories=1,resizable=1");
+    tw_window.focus();
+    return false;
+}
+
+
+function startWindowCheck()
+{
+    if (window_check == null) window_check = setInterval ("checkWindowClose()", 500);
+}
+function checkWindowClose()
+{
+    if (mini_window == null && about_window == null && youtube_window == null) 
+    {
+        clearInterval (window_check);
+        window_check = null;
+    }
+    else
+    {
+        if (mini_window != null)
+        {
+            if (mini_window.closed == true) 
+            {
+                self.focus();
+                mini_window = null;
+            }
+            else if (mini_window.ytplayer)
+            {
+                if (getPlayerState() == 1)
+                {
+                    // if miniplayer is playing - pause it
+                    if (mini_window.ytplayer.getPlayerState() == 1) mini_window.pause();
+                    // if this player is playing - copy volume from this player to mini player
+                    if (getVolume() != mini_window.getVolume()) 
+                    {
+                        if (mini_window.volume) mini_window.volume.setValue(getVolume());
+                        mini_window.setVolume(getVolume());
+                    }
+                }
+                else
+                {
+                    // if player is not playing - copy volume from mini player
+                    if (getVolume() != mini_window.getVolume()) setVolume (mini_window.getVolume());
+                }                   
+            }
+        }
+        if (about_window != null && about_window.closed == true) 
+        {
+            self.focus();
+            about_window = null;
+        }
+        if (youtube_window != null && youtube_window.closed == true)
+        {
+            self.focus();
+            if (getPlayerState() != 1) seekTo(startSec);
+            youtube_window = null;
+        }
+    }
+}
+
+function doBookmark()
+{
+    if (window.sidebarX)
+    {
+        // Firefox
+        window.sidebar.addPanel (sShareTitle, sShareBaseURL, '');
+    }
+    else if (window.externalX)
+    {
+        // Internet Explorer
+        window.external.AddFavorite (sShareBaseURL, sShareTitle);
+    }
+    else
+    {
+        alert ("Cannot add bookmark.  Please, press Ctrl+D to add a bookmark.");
+    }
+    return false;
+}
+
+// toggle time box appearance
+function toggleTimeBox()
+{
+    clearHideTimeBox();
+
+    var h = parseInt(timeBox.style.height);
+    if (h == 0)
+    {
+        timeBox.style.height = '30px';
+        timeBox.style.borderWidth = '1px';
+        content1.style.height = '553px;';
+        imgUpDn.src = '/images/red_arrow_up_15x9.gif';
+    }
+    else
+    {
+        timeBox.style.height = '0px';
+        timeBox.style.borderWidth = '0px';
+        content1.style.height = '521px';
+        imgUpDn.src = '/images/red_arrow_down_15x9.gif';
+    }
+  
+    return false; // so that '#' doesn't appear
+}
+// start/end times
+function btnStart()
+{
+    clearHideTimeBox();
+    txtStart.value = getCurrentTimeStr();
+}
+function btnEnd()
+{
+    clearHideTimeBox();
+    txtEnd.value = getCurrentTimeStr();
+}
+function btnOK()
+{
+    clearHideTimeBox();
+    var s1 = SecondsFromTime(txtStart.value);
+    var s2 = SecondsFromTime(txtEnd.value);
+    if (s1 < 0) s1 = 0;
+    if (s2 <= 0 || s2 > getDuration()) s2 = getDuration();
+    if (s2 < s1 + 5)
+    {
+        alert ('please specify start and end times with duration of at least 5 seconds');
+        return;
+    }
+  
+    startSec = s1;
+    endSec   = s2;
+
+    // if we are outside of our new time - seek to it
+    if (getCurrentTime() < startSec || getCurrentTime() > endSec) seekTo(startSec);
+  
+    // reset end to 0 if it's at the end
+    if (endSec >= getDuration()) endSec = 0;
+  
+    // set where we are repeating from and to
+    SetRepeatStartEndStatus ();
+  
+    // close the box
+    toggleTimeBox();
+  
+    // if we are not playing - start
+    if (getPlayerState() != 1) play();
+}
+function btnClear()
+{
+    startSec = 0;
+    endSec   = 0;
+    SetRepeatStartEndStatus ();
+    toggleTimeBox();
+    if (getPlayerState() != 1) play();
+}
+// return # of total seconds from "MM:ss"
+function SecondsFromTime(s)
+{
+    var mm = 0;
+    var ss = 0;
+    var c = s.indexOf(':');
+    if(c >= 0) { ss = parseInt(s.substring(c+1), 10); mm = parseInt(s.substring(0, c), 10); }
+    else { ss = parseInt(s, 10); }
+    if(isNaN(mm)) mm = 0; if(isNaN(ss)) ss = 0;
+    return ss + mm*60;
+}
+// return either 'from start to end' or 'from 0:02 to 0:34'
+function FormatFromToDisplay ()
+{
+    var s = 'from ';
+    if (startSec <= 0) s += 'start';
+    else s += formatTimeStr(startSec);
+    s += ' to ';
+    if (endSec <= 0 || endSec >= getDuration()) s += 'end';
+    else s += formatTimeStr(endSec);
+    if (startSec >= 0 && endSec > startSec && endSec <= getDuration())
+    {
+        var repeat_sec = endSec - startSec;
+        s += ' - ' + formatTimeStr(repeat_sec) + ' / ' + formatTimeStr(getDuration());
+    }
+    return s;
+}
+function SetRepeatStartEndStatus()
+{
+    // start is always available
+    txtStart.value = formatTimeStr(startSec);
+  
+    // if player is not initialized, retry in 200ms
+    if (getDuration() < 1)
+    {
+        txtStartEnd.innerHTML = 'Loading Video...';
+        txtEnd.value = '--';
+        setTimeout('SetRepeatStartEndStatus()', 200);
+    }
+    else
+    {
+        // set status
+        txtStartEnd.innerHTML = 'Repeating ' + FormatFromToDisplay ();
+        // end time
+        if (endSec > 0 && endSec < getDuration())
+            txtEnd.value = formatTimeStr(endSec);
+        else txtEnd.value = 'end';
+    
+        // modify direct link
+        var share_url = '';   // complete url
+        var share_title = ''; // title
+        var share_body = '';  // body (was used for Digg, but not for facebook or twitter)
+        if (startSec > 0 || endSec > 0)
+        {
+            var se = '&s=' + startSec; // se will have both start & end
+            if (endSec > 0 && endSec < getDuration()) se += '&e=' + endSec;
+            var sURL = 'http://www.YoutubeRepeater.com/watch?v=' + videoID + se; // displayed link should not have extra naming params
+            videoBottomLink.innerHTML = '<a href="' + sURL + '">Direct link to this video repeating ' + FormatFromToDisplay() + '</a>: ' + sURL;
+            share_url   = sShareBaseURL + se;
+            share_title = sShareTitle + ' ' + FormatFromToDisplay();
+            share_body  = 'Repeat ' + share_title + ' in a loop';
+        }
+        else
+        {
+            videoBottomLink.innerHTML = '';
+            share_url   = sShareBaseURL;
+            share_title = 'Repeat ' + sShareTitle + ' in a loop';
+            share_body = share_title;
+        }
+        // encode
+        share_url   = encodeURIComponent(share_url);
+        share_title = encodeURIComponent(share_title);
+        share_body  = encodeURIComponent(share_body + " on YoutubeRepeater.  Type 'repeater' between 'youtube' and '.com' and your video will automatically repeat/replay in a loop.");
+        // facebook link (straightforward url + title)
+        facebookLink.href = 'http://www.facebook.com/share.php?u=' + share_url + '&t=' + share_title;
+        facebookLink.rel='nofollow';
+        // twitter link is short
+        var tu = 'http://www.YoutubeRepeater.com/watch?v='+videoID;
+        if (startSec > 0) tu += '&s=' + startSec;
+        if (endSec > 0 && endSec < getDuration()) tu += '&e=' + endSec;
+        twitterLink.href = 'http://twitter.com/home?status=' + share_title + encodeURIComponent(' '+tu);
+        twitterLink.rel='nofollow';
+    }
+}
+function checkTimeEnter(e)
+{
+    if (e.keyCode == 13) btnOK();
+}
+
+function loadRelated() 
+{
+    Request1();
+}
+function createHttpPostReq()    
+{
+    var req = null;
+    if (window.XMLHttpRequest) req = new XMLHttpRequest();
+    else if (window.ActiveXObject) req = new ActiveXObject("Microsoft.XMLHTTP");
+    if (req)
+    {
+        req.open('POST', '/LoadRelatedVideos', true);
+        req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    }
+    return req;
+}
+function Request1()
+{
+    var req1 = createHttpPostReq();
+    if (req1)
+    {
+        req1.onreadystatechange = function() 
+        {
+            if (req1.readyState == 4) 
+            {
+                content1.innerHTML = req1.responseText;
+            }
+        }
+        req1.send('video='+videoID);
+    }
+    else
+    {
+        content1.innerHTML = 
+            "This feature supports browsers with JavaScript and XMLHttpRequest support." +
+            "Please try Internet Explorer, Firefox, Opera or Google Chrome";
+    }
+}
+
+var delay_hide_timebox = null;
+function OnLoad()
+{
+    // related vids
+    content1 = document.getElementById ('_ctl0_Content_videoRelated1');
+    if (content1) setTimeout('loadRelated()', 100);
+
+    // time box    
+    timeBox = document.getElementById('_ctl0_Content_timeBox');
+    imgUpDn = document.getElementById('imgUpDn');
+    // time texts
+    txtStartEnd = document.getElementById('txtStartEnd');
+    txtStart = document.getElementById('txtStart');
+    txtEnd = document.getElementById('txtEnd');
+    
+    // bottom link
+    videoBottomLink = document.getElementById ('videoBottomLink');
+    facebookLink = document.getElementById ('facebookLink');
+    twitterLink  = document.getElementById ('twitterLink');
+}
+function delayHideTimeBox()
+{
+    toggleTimeBox ();
+}
+function clearHideTimeBox()
+{
+    clearTimeout(delay_hide_timebox);
+}
+      
+</script>
+<script src="./cse_element__en.js.download" type="text/javascript"></script><link type="text/css" href="./default+en.css" rel="stylesheet"><link type="text/css" href="./default.css" rel="stylesheet"><style type="text/css">.gsc-control-cse{font-family:trebuchet ms, arial, sans-serif}.gsc-control-cse .gsc-table-result{font-family:trebuchet ms, arial, sans-serif}.gsc-refinementsGradient{background:linear-gradient(to left,rgba(255,255,255,1),rgba(255,255,255,0))}.gsc-control-cse{border-color:#FFFFFF;background-color:#FFFFFF}input.gsc-input,.gsc-input-box,.gsc-input-box-hover,.gsc-input-box-focus{border-color:#6FA8DC}.gsc-search-button-v2,.gsc-search-button-v2:hover,.gsc-search-button-v2:focus{border-color:#2F5BB7;background-color:#6FA8DC;background-image:none;filter:none}.gsc-search-button-v2 svg{fill:#FFFFFF}.gsc-tabHeader.gsc-tabhActive,.gsc-refinementHeader.gsc-refinementhActive{color:#1A73E8;border-color:#1A73E8;background-color:#FFFFFF}.gsc-tabHeader.gsc-tabhInactive,.gsc-refinementHeader.gsc-refinementhInactive{color:#999999;border-color:#999999;background-color:#FFFFFF}.gsc-webResult.gsc-result,.gsc-results .gsc-imageResult{border-color:#FFFFFF;background-color:#F3F3F3}.gsc-webResult.gsc-result:hover{border-color:#FFEABB;background-color:#F3F3F3}.gs-webResult.gs-result a.gs-title:link,.gs-webResult.gs-result a.gs-title:link b,.gs-imageResult a.gs-title:link,.gs-imageResult a.gs-title:link b{color:#1155CC}.gs-webResult.gs-result a.gs-title:visited,.gs-webResult.gs-result a.gs-title:visited b,.gs-imageResult a.gs-title:visited,.gs-imageResult a.gs-title:visited b{color:#674EA7}.gs-webResult.gs-result a.gs-title:hover,.gs-webResult.gs-result a.gs-title:hover b,.gs-imageResult a.gs-title:hover,.gs-imageResult a.gs-title:hover b{color:#0000FF}.gs-webResult.gs-result a.gs-title:active,.gs-webResult.gs-result a.gs-title:active b,.gs-imageResult a.gs-title:active,.gs-imageResult a.gs-title:active b{color:#1155CC}.gsc-cursor-page{color:#1155CC}a.gsc-trailing-more-results:link{color:#1155CC}.gs-webResult:not(.gs-no-results-result):not(.gs-error-result) .gs-snippet,.gs-fileFormatType{color:#999999}.gs-webResult div.gs-visibleUrl{color:#F3F3F3}.gs-webResult div.gs-visibleUrl-short{color:#F3F3F3}.gs-webResult div.gs-visibleUrl-short{display:block}.gs-webResult div.gs-visibleUrl-long{display:none}.gs-webResult div.gs-visibleUrl-breadcrumb{display:none}.gsc-cursor-box{border-color:#FFFFFF}.gsc-results .gsc-cursor-box .gsc-cursor-page{border-color:#999999;background-color:#FFFFFF;color:#999999}.gsc-results .gsc-cursor-box .gsc-cursor-current-page{border-color:#1A73E8;background-color:#FFFFFF;color:#1A73E8}.gsc-webResult.gsc-result.gsc-promotion{border-color:#F6F6F6;background-color:#F6F6F6}.gsc-completion-title{color:#1155CC}.gsc-completion-snippet{color:#999999}.gs-promotion a.gs-title:link,.gs-promotion a.gs-title:link *,.gs-promotion .gs-snippet a:link{color:#1155CC}.gs-promotion a.gs-title:visited,.gs-promotion a.gs-title:visited *,.gs-promotion .gs-snippet a:visited{color:#1155CC}.gs-promotion a.gs-title:hover,.gs-promotion a.gs-title:hover *,.gs-promotion .gs-snippet a:hover{color:#1155CC}.gs-promotion a.gs-title:active,.gs-promotion a.gs-title:active *,.gs-promotion .gs-snippet a:active{color:#1155CC}.gs-promotion .gs-snippet,.gs-promotion .gs-title .gs-promotion-title-right,.gs-promotion .gs-title .gs-promotion-title-right *{color:#333333}.gs-promotion .gs-visibleUrl,.gs-promotion .gs-visibleUrl-short{color:#009933}.gcsc-find-more-on-google{color:#1155CC}.gcsc-find-more-on-google-magnifier{fill:#1155CC}</style><style type="text/css">.gscb_a{display:inline-block;font:27px/13px arial,sans-serif}.gsst_a .gscb_a{color:#a1b9ed;cursor:pointer}.gsst_a:hover .gscb_a,.gsst_a:focus .gscb_a{color:#36c}.gsst_a{display:inline-block}.gsst_a{cursor:pointer;padding:0 4px}.gsst_a:hover{text-decoration:none!important}.gsst_b{font-size:16px;padding:0 2px;position:relative;user-select:none;-webkit-user-select:none;white-space:nowrap}.gsst_e{vertical-align:middle;opacity:0.55;}.gsst_a:hover .gsst_e,.gsst_a:focus .gsst_e{opacity:0.72;}.gsst_a:active .gsst_e{opacity:1;}.gsst_f{background:white;text-align:left}.gsst_g{background-color:white;border:1px solid #ccc;border-top-color:#d9d9d9;box-shadow:0 2px 4px rgba(0,0,0,0.2);-webkit-box-shadow:0 2px 4px rgba(0,0,0,0.2);margin:-1px -3px;padding:0 6px}.gsst_h{background-color:white;height:1px;margin-bottom:-1px;position:relative;top:-1px}.gsib_a{width:100%;padding:4px 6px 0}.gsib_a,.gsib_b{vertical-align:top}.gssb_c{border:0;position:absolute;z-index:989}.gssb_e{border:1px solid #ccc;border-top-color:#d9d9d9;box-shadow:0 2px 4px rgba(0,0,0,0.2);-webkit-box-shadow:0 2px 4px rgba(0,0,0,0.2);cursor:default}.gssb_f{visibility:hidden;white-space:nowrap}.gssb_k{border:0;display:block;position:absolute;top:0;z-index:988}.gsdd_a{border:none!important}.gsq_a{padding:0}.gssb_a{padding:0 7px}.gssb_a,.gssb_a td{white-space:nowrap;overflow:hidden;line-height:22px}#gssb_b{font-size:11px;color:#36c;text-decoration:none}#gssb_b:hover{font-size:11px;color:#36c;text-decoration:underline}.gssb_g{text-align:center;padding:8px 0 7px;position:relative}.gssb_h{font-size:15px;height:28px;margin:0.2em;-webkit-appearance:button}.gssb_i{background:#eee}.gss_ifl{visibility:hidden;padding-left:5px}.gssb_i .gss_ifl{visibility:visible}a.gssb_j{font-size:13px;color:#36c;text-decoration:none;line-height:100%}a.gssb_j:hover{text-decoration:underline}.gssb_l{height:1px;background-color:#e5e5e5}.gssb_m{color:#000;background:#fff}.gssb_a{padding:0 9px}.gsib_a{padding:5px 9px 4px 9px}.gscb_a{line-height:27px}.gssb_e{border:0}.gssb_l{margin:5px 0}input.gsc-input::-webkit-input-placeholder{font-size:14px}input.gsc-input:-moz-placeholder{font-size:14px}input.gsc-input::-moz-placeholder{font-size:14px}input.gsc-input:-ms-input-placeholder{font-size:14px}input.gsc-input:focus::-webkit-input-placeholder{color:transparent}input.gsc-input:focus:-moz-placeholder{color:transparent}input.gsc-input:focus::-moz-placeholder{color:transparent}input.gsc-input:focus:-ms-input-placeholder{color:transparent}.gssb_c .gsc-completion-container{position:static}.gssb_c{z-index:5000}.gsc-completion-container table{background:transparent;font-size:inherit;font-family:inherit}.gssb_c > tbody > tr,.gssb_c > tbody > tr > td,.gssb_d,.gssb_d > tbody > tr,.gssb_d > tbody > tr > td,.gssb_e,.gssb_e > tbody > tr,.gssb_e > tbody > tr > td{padding:0;margin:0;border:0}.gssb_a table,.gssb_a table tr,.gssb_a table tr td{padding:0;margin:0;border:0}</style></head>
+<body>
+
+
+<div id="container">
+<div id="Div1" class="menu_search" style="position:absolute;color:#bbb; z-index:994;left:676px; top:5px;text-align:right;opacity:0.88">
+    <input type="text" id="txtSearch" onkeypress="checkEnter(event)" class="menu_search_txt" value="" v="">
+      <a href="https://www.youtuberepeater.com/SearchYouTubeVideos"><img id="btnSearch" alt="Search YouTube" onclick="return doSearch()" style="opacity:0.60;" class="menu_search_btn" src="./search_youtube_104x25.gif"></a> 
+       &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;<font size="2"><i><br>(1. Youtube unfiltered)<font style="line-height: 13px;"><br><br></font>(2. Google Video search (no blocked videos))   </i></font></div>
+
+ <div id="header_row">              
+    <div id="logo">
+      <a href="https://www.youtuberepeater.com/"><img alt="YoutubeRpeater Logo" width="270" height="90" src="./logo_270x90.gif"></a>
+    </div>
+    <div id="banner">
+      <div id="banner_550x80x1">
+      
+      <div id="banner_550x80x2">
+    
+
+<div style="color:#aaa; line-height:16px; font-size:14px; text-align:left; padding-left:20px">
+<i><font color="#69b"><i></i> Dear Friends, TYSM for the years! &amp; <font color="#79b">Sorry, </font><br> <font size="1"> if you noticed outages(last year)
+ (We care &amp; will pay a for a 2nd server at need)</font> 
+   <br>  <font style="font-size:11px;" color="#48b">  + Still want to bring you our "Top5000" too. (A timeline of 'earworms' &amp; what people watch &amp; listen/ed on repeat)  
+Want to <a rel="“nofollow”" href="https://discord.gg/UcfNmdg">chat</a> about repeating Music, Youtube or Charity?   </font>  
+    <br>   &nbsp; &nbsp; &nbsp; &nbsp;   </font></i><font color="#69b">    </font>
+
+<!-- Sorry many Youtube Apps faced limitations in 2019<br /> 
+ <a style="color:Teal" href="https://forms.gle/f8nYfMAnqSC7EW1X9">Vote here</a> for new features.<br>  
+  <div style="color:#789; font-size:16px;width:670px; text-align:left">
+  We made YoutubeRepeater failproof again for all years to come.<a href="https://www.youtuberepeater.com/TopRepeaters">Top videos</a>
+ 
+</div>
+ <div style="color:#876; font-size:19px;width:590px; text-align:left">&nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; Thank you so much for your loyalty! 
+ 	&nbsp;&#127881; &#127881;  </div>  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp;&nbsp; &nbsp;  Proud so many of you stayed. &nbsp; &nbsp;  &nbsp;  &nbsp; 	   
+   -->                     
+                   
+                            <!--     <div style="color:#aaa; font-size:20px;width:590px; text-align:left"> Repeating works perfect <font color="#999">Thank you for your loyalty!&nbsp; &nbsp;  </font>
+ <div style="color:#ccc; width:590px; text-align:left"> &nbsp; &nbsp; &nbsp; &nbsp; Top-Lists, Loops, Search will be back later. 
+<br >  + We prepare new features finally! :)  &nbsp;- &nbsp; <a href="https://forms.gle/f8nYfMAnqSC7EW1X9"> let us notify you</a><br>    </div></div>  -->
+
+</div>
+        
+        
+        
+      </div>
+      </div>
+    </div>
+  </div>
+      
+  <div id="_ctl0_menu_row" class="menu_row">
+  <center>
+  <table id="_ctl0_MenuTable" cellspacing="0" cellpadding="0" border="0" style="border-width:0px;width:100%;border-collapse:collapse;">
+	<tbody><tr>
+		<td class="menu_item"><a href="https://www.youtuberepeater.com/">Repeat YouTube</a></td><td class="menu_item"><a href="https://www.youtuberepeater.com/TopRepeaters">Top Videos / Most Repeated</a></td><td class="menu_item"><a href="https://www.youtuberepeater.com/YouTubeRepeat-MiniPlayer">   </a></td><td class="menu_item"><a href="https://www.youtuberepeater.com/ContactUs">Contact Us</a></td><td class="menu_item" align="right" style="width:304px;">
+      <div id="searchDiv" class="menu_search" style="top:0px;">
+                           <script>
+			(function() {
+				var gcse = document.createElement('script');
+			    gcse.type = 'text/javascript';
+			    gcse.async = true;
+			    gcse.src = 'https://cse.google.com/cse.js?cx=000233056048401308543:j6krij_cxjg';
+
+			    var s = document.getElementsByTagName('script')[0];
+			    s.parentNode.insertBefore(gcse, s);
+			})();
+                                 
+				/*
+			 * Google Search - Custom code
+			*/
+
+			// "youtube.com" => "youtuberepeater.com"
+			setInterval(function() {
+				var results = document.querySelectorAll('.gsc-results-wrapper-overlay *');
+                var spellings = document.querySelectorAll('.gs-spelling *');
+                
+				for (var i = 0, l = results.length; i < l; i++) {
+					var result = results[i];
+
+					// Replace in "href"
+					if (/youtube.com/.test(result.href)) {
+						result.href = result.href.replace(/youtube\.com/g, 'youtuberepeater.com');
+					}
+
+					// Replace in "data-*"
+					for (var d in result.dataset) {
+						if (/youtube.com/.test(result.dataset[d])) {
+							result.dataset[d] = result.dataset[d].replace(/youtube\.com/g, 'youtuberepeater.com');
+
+							if (d == 'cturl' && /(gs\-image)/.test(result.className)) {
+								result.dataset[d] = result.href;
+							}
+						}
+					}
+
+					// Replace in "innerText" (if have no children)
+					if (result.children.length == 0 && /youtube.com/.test(result.innerText)) {
+						result.innerText = result.innerText.replace(/youtube\.com/g, 'youtuberepeater.com');
+					}
+
+					// Open links in same tab via removing "target" attribute
+					/*if (result.target == '_blank') {
+						result.removeAttribute('target');
+					}*/
+
+					// Open links in same tab via "onclick"
+					if (/gs\-title/.test(result.className) && result.href) {
+						result.addEventListener('click', function(event) {
+							event.preventDefault();
+							event.stopPropagation();
+
+							window.open(this.href, '_self');
+
+							return false;
+						});
+					}
+				}
+				for (var i = 0, l = spellings.length; i < l; i++) {
+				  var spelling = spellings[i];
+				spelling.innerText = spelling.innerText.replace(/..vevo..*SME.../g, ' ');}   
+			}, 500);
+
+
+
+
+			// Custom styles (IE 7+)
+			(function(){
+				var style_element = document.createElement('style'),
+					styles = '.gsc-url-top{display:none}.gsc-webResult .gsc-result{padding:5px 0}.gsc-control-cse .gs-spelling,.gsc-control-cse .gs-result .gs-title,.gsc-control-cse .gs-result .gs-title *{font-size:14px}';
+
+				style_element.type = 'text/css';
+
+				if (style_element.styleSheet) {
+					style_element.styleSheet.cssText = styles;
+				} else {
+					style_element.appendChild(document.createTextNode(styles));
+				}
+
+				document.documentElement.appendChild(style_element);
+			})();
+
+		</script>
+		<div id="___gcse_0" dir="ltr"><form class="gsc-search-box gsc-search-box-tools" accept-charset="utf-8"><table cellspacing="0" cellpadding="0" role="presentation" class="gsc-search-box"><tbody><tr><td class="gsc-input"><div class="gsc-input-box" id="gsc-iw-id1"><table cellspacing="0" cellpadding="0" role="presentation" id="gs_id50" class="gstl_50 gsc-input" style="width: 100%; padding: 0px;"><tbody><tr><td id="gs_tti50" class="gsib_a"><input autocomplete="off" type="text" size="10" class="gsc-input" name="search" title="search" aria-label="search" id="gsc-i-id1" dir="ltr" spellcheck="false" style="width: 100%; padding: 0px; border: none; margin: 0px; height: auto; outline: none;"></td><td class="gsib_b"><div class="gsst_b" id="gs_st50" dir="ltr"><a class="gsst_a" href="javascript:void(0)" title="Clear search box" role="button" style="display: none;"><span class="gscb_a" id="gs_cb50" aria-hidden="true">×</span></a></div></td></tr></tbody></table></div></td><td class="gsc-search-button"><button class="gsc-search-button gsc-search-button-v2"><svg width="13" height="13" viewBox="0 0 13 13"><title>search</title><path d="m4.8495 7.8226c0.82666 0 1.5262-0.29146 2.0985-0.87438 0.57232-0.58292 0.86378-1.2877 0.87438-2.1144 0.010599-0.82666-0.28086-1.5262-0.87438-2.0985-0.59352-0.57232-1.293-0.86378-2.0985-0.87438-0.8055-0.010599-1.5103 0.28086-2.1144 0.87438-0.60414 0.59352-0.8956 1.293-0.87438 2.0985 0.021197 0.8055 0.31266 1.5103 0.87438 2.1144 0.56172 0.60414 1.2665 0.8956 2.1144 0.87438zm4.4695 0.2115 3.681 3.6819-1.259 1.284-3.6817-3.7 0.0019784-0.69479-0.090043-0.098846c-0.87973 0.76087-1.92 1.1413-3.1207 1.1413-1.3553 0-2.5025-0.46363-3.4417-1.3909s-1.4088-2.0686-1.4088-3.4239c0-1.3553 0.4696-2.4966 1.4088-3.4239 0.9392-0.92727 2.0864-1.3969 3.4417-1.4088 1.3553-0.011889 2.4906 0.45771 3.406 1.4088 0.9154 0.95107 1.379 2.0924 1.3909 3.4239 0 1.2126-0.38043 2.2588-1.1413 3.1385l0.098834 0.090049z"></path></svg></button></td><td class="gsc-clear-button"><div class="gsc-clear-button" title="clear results">&nbsp;</div></td></tr></tbody></table></form></div>
+		
+     <!-- <input type="text" id="txtSearch" onkeypress="checkEnter(event)" class="menu_search_txt" value=""  x="               (temporarily off)" v="">
+      <a href="SearchYouTubeVideos"><img id="btnSearch" alt="Search YouTube" onclick="return doSearch()" 
+         class="menu_search_btn" src="/images/search_youtube_104x25.gif" /></a>  -->     
+      </div>
+    </td>
+	</tr>
+</tbody></table>
+  </center>
+  </div>
+  
+  
+
+  <div id="content_row">
+  
+    
+  
+  <div id="_ctl0_Content_videoTop1" class="videoTop"><div class="videoTitle"><h1 style="font-size: 14px; line-height: 20px;">Nightcore - La Da Dee</h1></div><div class="videoYTLink"><a class="icon youtube" onclick="return openYoutube(&#39;http://www.youtube.com/watch?v=xmEkAIWBVvw&#39;)" href="http://www.youtube.com/watch?v=xmEkAIWBVvw">YouTube</a></div></div>
+  <div id="_ctl0_Content_videoPlayer1" class="videoPlayer">
+    
+    <!-- Youtube API player 2016 -->
+    <iframe id="player" frameborder="0" allowfullscreen="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" title="Nightcore - La Da Dee" width="640" height="360" src="./xmEkAIWBVvw.html"></iframe>
+    
+    <script language="JavaScript" type="text/javascript">
+
+        // video params
+        videoID = "xmEkAIWBVvw";
+        startSec = 0;
+        endSec = 0;
+        repeat_mini = 0;
+        repeat_url = '/VideoRepeated';
+
+        // load player API javascript
+        var tag = document.createElement('script');
+        tag.src = "//www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        // init function
+        function onYouTubeIframeAPIReady() 
+        {
+            // alert("onYouTubeIframeAPIReady");
+
+            // ytplayer from player_js
+            var p = new YT.Player('player',
+            {
+              width: '640',
+              height: '360',
+              videoId: videoID,
+              playerVars: { 'autoplay': 1, 'loop': 1, 'controls': 2, 'showinfo': 0, 'start': startSec, 'iv_load_policy': 3 },
+              events: {
+                  onReady: onPlayerReady,
+                  onStateChange: onPlayerStateChange,
+                  onError: onPlayerError
+              }
+            });
+
+            // set repeat status
+            SetRepeatStartEndStatus();
+
+            // hide time box in 10 sec
+            delay_hide_timebox = setTimeout('delayHideTimeBox()', 10000);
+        }
+
+    </script>
+
+  </div>
+  <div id="_ctl0_Content_videoInfo1" class="videoInfo">
+    <div id="_ctl0_Content_videoStars1" class="videoStars"><img alt="5.00" width="15" height="15" src="./star15_red.gif"><img alt="5.00" width="15" height="15" src="./star15_red.gif"><img alt="5.00" width="15" height="15" src="./star15_red.gif"><img alt="5.00" width="15" height="15" src="./star15_red.gif"><img alt="5.00" width="15" height="15" src="./star15_red.gif"></div>
+    <div id="_ctl0_Content_videoRatings1" class="videoRatings">385,549 likes</div>
+    <div id="_ctl0_Content_videoStartEnd1" class="videoStartEnd">
+      <a href="https://www.youtuberepeater.com/watch?v=xmEkAIWBVvw#" onclick="return toggleTimeBox()"><span id="txtStartEnd">Loading Video...</span></a>
+      <a href="https://www.youtuberepeater.com/watch?v=xmEkAIWBVvw#" onclick="return toggleTimeBox()"><img id="imgUpDn" src="./red_arrow_down_15x9.gif"></a>
+    </div>
+    <div id="_ctl0_Content_videoViews1" class="videoViews"><b>39,869,424</b> views</div>
+  </div>
+  
+  <div id="_ctl0_Content_timeBox" class="videoTimeBox" onmouseover="clearHideTimeBox()" style="height: 0px; border-width: 0px;">
+    <div class="videoTimeStart">
+      <table border="0" cellpadding="0" cellspacing="0">
+      <tbody><tr>
+        <td valign="middle">Start at <input type="text" id="txtStart" onfocus="clearHideTimeBox()" onkeypress="checkTimeEnter(event)" class="videoTimeTxt" value="0:00"></td> 
+        <td valign="middle"><img onclick="btnStart()" alt="set current time" class="videoTimeBtn" src="./btn_time_markpos_96x20.gif"></td> 
+      </tr>
+      </tbody></table>
+    </div>
+    <div class="videoTimeEnd">
+      <table border="0" cellpadding="0" cellspacing="0">
+      <tbody><tr>
+        <td valign="middle">End at <input type="text" id="txtEnd" onfocus="clearHideTimeBox()" onkeypress="checkTimeEnter(event)" class="videoTimeTxt" value="0:00"></td> 
+        <td valign="middle"><img onclick="btnEnd()" alt="set current time" class="videoTimeBtn" src="./btn_time_markpos_96x20.gif"></td> 
+      </tr>
+      </tbody></table>
+    </div>
+    <div class="videoTimeClose">
+      <img onclick="btnOK()" alt="ok" class="videoTimeBtn" src="./btn_time_ok_34x20.gif">
+      <img onclick="btnClear()" alt="clear" class="videoTimeBtn" src="./btn_time_clear_45x20.gif">
+    </div>
+  </div>
+  
+  <div id="_ctl0_Content_videoBottom1" class="videoBottom">
+    <div class="videoMiniImage">
+      <a href="https://www.youtuberepeater.com/LaunchMiniPlayer" onclick="return openMiniPlayer()"><img width="183" height="133" alt="Launch Mini Player" src="./launch_mini_player2.gif"></a>
+      <div class="videoMiniFill1">
+        <div class="videoMiniFill2">
+          <a href="https://www.youtuberepeater.com/LaunchMiniPlayer" onclick="return openMiniPlayer()"><img width="171" alt="Launch Mini Player" src="./default.jpg"></a>
+        </div>
+      </div>
+    </div>
+    <div class="videoSocial">
+      
+      <div style="position:relative;">
+      <ul class="linkBar">
+        <li><a class="icon facebook" id="facebookLink" href="https://www.youtuberepeater.com/Facebook" target="_blank" onclick="return openFacebook()">Share</a></li>
+      </ul>
+      <ul class="linkBar">
+        <li><a class="icon twitter" id="twitterLink" href="https://www.youtuberepeater.com/Twitter" target="_blank" onclick="return openTwitter()">Tweet</a></li>
+      </ul>
+      <ul class="linkBar">        
+        <li><a class="icon favorite" href="https://www.youtuberepeater.com/Bookmark" target="_blank" onclick="return doBookmark()"></a></li>
+      </ul>
+      </div>
+      
+    </div>
+    <div class="videoBold">
+      <a href="https://www.youtuberepeater.com/LaunchMiniPlayer" onclick="return openMiniPlayer()">Launch Mini Player</a>
+    </div>
+    <p align="justify" style="font-weight:normal;">
+      The Mini Player will repeat your video in a tiny window
+      It can be re-sized and moved anywhere you want.
+      <!-- The Mini Player will repeat your video in a window
+      without menu or toolbars.  It has smaller playback 
+      controls and can be sized and moved anywhere you want.  -->
+      <a onclick="return openAboutMini()" target="_blank" href="https://www.youtuberepeater.com/MiniPlayer">Learn more...</a>
+    </p>
+  </div>
+  <div class="videoBottomLink" id="videoBottomLink">
+    <!-- dynamic when start or end changes -->
+  </div>
+  
+  <div id="_ctl0_Content_videoRelatedHead1" class="videoRelatedHead">
+    <h1 style="font-size: 14px; line-height: 20px;">Related Videos</h1>
+  </div>
+  <div id="_ctl0_Content_videoRelated1" class="videoRelated" style="height: 521px;"><i><font color="lightgrey">No related Videos. Or youtube rate-limited (especially before 0am in California (=4pm Manila)<br>Looking forward very much to give you no more errors.<font size="5">☺</font></font></i></div>  
+    <div id="___gcse_1"><div class="gsc-control-cse gsc-control-cse-en"><div class="gsc-control-wrapper-cse" dir="ltr"><div class="gsc-results-wrapper-overlay"><div class="gsc-results-close-btn" tabindex="0"></div><div class="gsc-positioningWrapper"><div class="gsc-tabsAreaInvisible"><div aria-label="refinement" role="tab" class="gsc-tabHeader gsc-inline-block gsc-tabhActive">Custom Search</div><span class="gs-spacer"> </span></div></div><div class="gsc-positioningWrapper"><div class="gsc-refinementsAreaInvisible"></div></div><div class="gsc-above-wrapper-area-invisible"><div class="gsc-above-wrapper-area-backfill-container"></div><table cellspacing="0" cellpadding="0" role="presentation" class="gsc-above-wrapper-area-container"><tbody><tr><td class="gsc-result-info-container"><div class="gsc-result-info-invisible"></div></td><td class="gsc-orderby-container"><div class="gsc-orderby-invisible"><div class="gsc-orderby-label gsc-inline-block">Sort by:</div><div class="gsc-option-menu-container gsc-inline-block"><div class="gsc-selected-option-container gsc-inline-block"><div class="gsc-selected-option">Relevance</div><div class="gsc-option-selector"></div></div><div class="gsc-option-menu-invisible"><div class="gsc-option-menu-item gsc-option-menu-item-highlighted"><div class="gsc-option">Relevance</div></div><div class="gsc-option-menu-item"><div class="gsc-option">Date</div></div></div></div></div></td></tr></tbody></table></div><div class="gsc-adBlockInvisible"></div><div class="gsc-wrapper"><div class="gsc-adBlockInvisible"></div><div class="gsc-resultsbox-invisible"><div class="gsc-resultsRoot gsc-tabData gsc-tabdActive"><div><div class="gsc-expansionArea"></div></div></div></div></div></div><div class="gsc-modal-background-image" tabindex="0"></div></div></div></div>    
+<!-- 
+<div style="width:100%; padding-left:40px;"><iframe width="705" height="400"   
+src="https://www.youtube-nocookie.com/embed/xmEkAIWBVvw?version=3&loop=1&playlist=xmEkAIWBVvw&autoplay=1&rel=0&showinfo=1&iv_load_policy=3&time_continue=0&t=0&end=0&start=0" 
+frameborder="0" allow="accelerometer; loop; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>   
+<font  color="#bbb" >(Related videos will be back)  </font>                      
+                 <br>
+    <div style="color:#bbb; font-size:15px;width:720px; text-align:left">
+      (Mini player will also be back)       &nbsp;&nbsp;&nbsp;&nbsp; 
+                                  <br />       <br />                                   
+          
+<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdZyGE3fPOeEd1HTL9DI20dvURSkd-bvlh6AtTeeDP7ZC10Gw/viewform?embedded=true" width="780" height="1140" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>
+</div><br />
+-->  <div style="color:#777 ; font-size:19px; margin-left:30px; margin-top:-30px;  margin-bottom:-20px; text-align:center;  "> We also work hard on the only open browser add-on for YouTube with 90 features for 500,000+ people.
+<br> WebStore: <a href="https://chrome.google.com/webstore/detail/improve-youtube-open-sour/bnomihfieiccainjcjblhegjgglakjdd">YouTube extension</a>
+&amp; <a rel="nofollow" href="https://github.com/code-for-charity/YouTube-Extension">GitHub</a> (One of Firefox' recommended 100)</div>  
+<!--  </div> </div>   -->        <div class="videoBottomLink" id="Div1">  
+             
+     
+<!-- simpliest but useless way of embedding    
+ object width="425" height="344">    
+< param name="movie" value="http://www.youtube.com/v/&hl=en"></param>
+< embed src="http://www.youtube.com/v/***VIDEOID***&hl=en&autoplay=1&loop=1"
+  typeX="application/x-shockwave-flash" width="425" height="344"></embed>
+</object-->
+
+    
+  </div>
+  
+  <div id="footer_row">
+    <div id="footer_left_Bicon">
+    
+    <a rel="“nofollow”" onclick="return openBlog()" href="https://youtuberepeater.blogspot.com/"><img width="14" height="14" src="./icon_blog14.gif"></a>
+    </div>
+    <div id="footer_left_Btext">
+     <a rel="“nofollow”" onclick="return openBlog()" href="https://youtuberepeater.blogspot.com/">Blog</a>
+    </div>
+    <div id="footer_left_Ticon">
+     <a rel="“nofollow”" onclick="return openTwit()" href="https://twitter.com/YoutubeRepeater"><img width="16" height="16" src="./icon_twitter.gif"></a>
+    </div>
+    <div id="footer_left_Ttext">
+     <a rel="“nofollow”" onclick="return openTwit()" href="https://twitter.com/YoutubeRepeater">Twitter</a>
+    </div>
+    <div id="footer_right">
+     made with ♥ since 2009 - Thank you!
+    </div>
+  </div>
+
+</div>
+
+<!-- google analytics start -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script src="./ga.js.download" type="text/javascript"></script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-3572574-6");
+pageTracker._trackPageview();
+setTimeout('noBounce60()',60000);
+} catch(err) {}
+function noBounce60() {try{pageTracker._trackEvent('NoBounce', '60sec');}catch(err){}}
+</script>
+<!-- google analytics end -->
+
+
+
+</div><table cellspacing="0" cellpadding="0" role="presentation" class="gstl_50 gssb_c" style="width: 170px; display: none; top: 123px; left: 678px; position: absolute;"><tbody><tr><td class="gssb_f"></td><td class="gssb_e" style="width: 100%;"></td></tr></tbody></table></body><style type="text/css">.gsc-url-top{display:none}.gsc-webResult .gsc-result{padding:5px 0}.gsc-control-cse .gs-spelling,.gsc-control-cse .gs-result .gs-title,.gsc-control-cse .gs-result .gs-title *{font-size:14px}</style></html>
